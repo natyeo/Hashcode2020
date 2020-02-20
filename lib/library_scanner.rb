@@ -38,6 +38,8 @@ class LibraryScanner
   end
 
   def sort_libraries
-    @libraries.sort! { |a, b| a[:sign_up] <=> b[:sign_up] }
+    @libraries.sort! do |a, b|
+      [a[:sign_up], b[:book_number] ] <=> [ b[:sign_up], a[:book_number]]
+    end
   end
 end
