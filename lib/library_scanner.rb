@@ -15,6 +15,11 @@ class LibraryScanner
     end
   end
 
+  def run
+    sort_books
+    output
+  end
+
   def output
     filename = @filename.gsub('.txt', '_output.txt').gsub('inputs', 'outputs')
 
@@ -25,5 +30,9 @@ class LibraryScanner
         file.puts lib[:books].map(&:to_s).join(' ')
       end
     end
+  end
+
+  def sort_books
+    @libraries.each { |lib| lib[:books].sort! { |a, b| @books[b] <=> @books[a] } }
   end
 end
