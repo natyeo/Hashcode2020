@@ -3,18 +3,16 @@ class Checker
 
   def score(input, submission)
     book_scores = IO.readlines(input)[1].split.map(&:to_i)
-    submission_books
-    submission.each do |book|
-      IO.readlines(submission)[2].split.map(&:to_i)
+    line_count = `wc -l "#{submission}"`.strip.split(' ')[0].to_i
+    line_number = 2
+    submissions_books = []
+    while line_number < line_count
+      submissions_books << IO.readlines(submission)[line_number].split.map(&:to_i)
+      line_number += 2
     end
-    # submission_1 = IO.readlines(submission)[2].split.map(&:to_i)
-    # submission_2 = IO.readlines(submission)[4].split.map(&:to_i)
-    array_1 = submission_1.map do |book|
+    array = submissions_books.flatten.map do |book|
       book_scores[book]
     end
-    array_2 = submission_2.map do |book|
-      book_scores[book]
-    end
-    array_1.reduce(:+) + array_2.reduce(:+)
+    array.reduce(:+)
   end
 end
