@@ -5,8 +5,8 @@ class LibraryScanner
       @book_number, @lib_number, @days = file.readline.chomp.split(' ').map(&:to_i)
       @books = file.readline.chomp.split(' ').map(&:to_i)
       @libraries = []
-      @lib_number.times do
-        lib = {}
+      @lib_number.times do |i|
+        lib = {index: i}
         lib[:book_number], lib[:sign_up], lib[:books_per_day] =
           file.readline.chomp.split(' ').map(&:to_i)
         lib[:books] = file.readline.chomp.split(' ').map(&:to_i)
@@ -16,6 +16,7 @@ class LibraryScanner
   end
 
   def run
+    sort_libraries
     sort_books
     output
   end
@@ -25,8 +26,8 @@ class LibraryScanner
 
     File.open(filename, 'w') do |file|
       file.puts @lib_number
-      @libraries.each_with_index do |lib, i|
-        file.puts "#{i} #{lib[:books].length}"
+      @libraries.each do |lib|
+        file.puts "#{lib[:index]} #{lib[:books].length}"
         file.puts lib[:books].map(&:to_s).join(' ')
       end
     end
@@ -34,5 +35,9 @@ class LibraryScanner
 
   def sort_books
     @libraries.each { |lib| lib[:books].sort! { |a, b| @books[b] <=> @books[a] } }
+  end
+
+  def sort_libraries
+    @libraries.sort! { |a, b| a[:sign_up] <=> b[:sign_up] }
   end
 end
