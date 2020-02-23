@@ -18,6 +18,7 @@ class LibraryScanner
   def run
     sort_libraries
     sort_books
+    remove_dups
     output
   end
 
@@ -25,7 +26,7 @@ class LibraryScanner
     filename = @filename.gsub('.txt', '_output.txt').gsub('inputs', 'outputs')
 
     File.open(filename, 'w') do |file|
-      file.puts @lib_number
+      file.puts @libraries.length
       @libraries.each do |lib|
         file.puts "#{lib[:index]} #{lib[:books].length}"
         file.puts lib[:books].map(&:to_s).join(' ')
@@ -38,6 +39,29 @@ class LibraryScanner
   end
 
   def sort_libraries
-    @libraries.sort! { |a, b| a[:sign_up] <=> b[:sign_up] }
+    @libraries.sort! do |a, b|
+      [a[:sign_up], b[:book_number] ] <=> [ b[:sign_up], a[:book_number]]
+    end
+  end
+
+  def remove_dups
+    books = {}
+    @libraries.each do |lib|
+      lib[:books].select! do |book|
+        book_exists(books, book)
+      end
+    end
+
+    @libraries.select! do |lib|
+      lib[:books].length > 0
+    end
+  end
+
+  def book_exists(books, book)
+    unless books[book]
+      books[book] = true
+      return true
+    end
+    false
   end
 end
